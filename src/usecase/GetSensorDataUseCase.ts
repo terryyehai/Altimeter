@@ -18,8 +18,6 @@ export class GetSensorDataUseCase {
   private watchOrientationCleanup: (() => void) | null = null;
   private watchPressureCleanup: (() => void) | null = null;
   
-  // 記錄是否已經呼叫過 API 避免頻繁發送請求
-  private lastApiFetchTime: number = 0; 
 
   private state: AppSensorState = {
     isTracking: false,
