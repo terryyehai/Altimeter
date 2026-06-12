@@ -70,6 +70,13 @@ body {
   max-width: 500px;
   margin: 0 auto;
   gap: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.app-container::-webkit-scrollbar {
+  display: none;
 }
 
 .header {
@@ -172,7 +179,7 @@ body {
 .compass-container {
   aspect-ratio: 1 / 1;
   width: 100%;
-  max-height: 320px;
+  max-height: 280px;
   margin: 0 auto;
   position: relative;
   display: flex;
@@ -218,6 +225,7 @@ body {
   padding: 12px 0 24px;
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .pulse-btn-wrapper {
