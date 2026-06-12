@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
-import { GetSensorDataUseCase, AppSensorState } from '../../usecase/GetSensorDataUseCase';
-import { SensorService } from '../../infrastructure/SensorService';
+import { GetSensorDataUseCase, AppSensorState } from '../usecase/GetSensorDataUseCase';
+import { SensorService } from '../infrastructure/SensorService';
 
 // Singleton，確保在元件重新渲染時不會重建底層服務
 const sensorService = new SensorService();
