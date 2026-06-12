@@ -1,0 +1,287 @@
+:root {
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Outfit', sans-serif;
+  
+  --bg-dark: #0a0a0c;
+  --glass-bg: rgba(20, 20, 25, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-glow: rgba(255, 255, 255, 0.03);
+  
+  --accent-cyan: #00f0ff;
+  --accent-purple: #8a2be2;
+  --text-main: #f5f5f7;
+  --text-muted: #8e8e93;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden; /* 防止原生滾動反彈效應，讓它感覺更像 Native App */
+  position: relative;
+}
+
+/* Background Gradient Mesh Aurora */
+.aurora-bg {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.04) 0%, transparent 40%);
+  z-index: -1;
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Parallax Effect */
+}
+
+/* Glassmorphism Card Base */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 var(--glass-glow);
+}
+
+/* Typography Utilities */
+.font-number {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Grid Layouts */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  gap: 16px;
+}
+
+.header {
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+.header h1 {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Error Toast */
+.error-toast {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 50, 50, 0.2);
+  border: 1px solid rgba(255, 50, 50, 0.4);
+  color: #ffbaba;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+/* Specific Card Adjustments */
+.metric-card {
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card.full-width {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metric-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.metric-value {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+
+.metric-card.full-width .metric-value {
+  font-size: 20px;
+}
+
+.metric-unit {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.metric-sub {
+  font-size: 12px;
+  color: var(--accent-cyan);
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* Compass */
+.compass-container {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-height: 320px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compass-ring {
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.03);
+  position: absolute;
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.02);
+}
+
+.compass-ticks-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+}
+
+.compass-center {
+  width: 8px;
+  height: 8px;
+  background: var(--text-main);
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.compass-degree-display {
+  position: absolute;
+  font-size: 48px;
+  font-weight: 300;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.8);
+}
+
+/* Pulse Button */
+.action-area {
+  padding: 12px 0 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.pulse-btn-wrapper {
+  position: relative;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  opacity: 0;
+  z-index: 0;
+}
+
+.pulse-ring.active {
+  animation: radar-pulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes radar-pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+
+.pulse-btn {
+  position: relative;
+  z-index: 1;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pulse-btn:active {
+  transform: scale(0.9);
+  background: rgba(255,255,255,0.12);
+}
+
+.pulse-btn.tracking {
+  background: rgba(0, 240, 255, 0.05);
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.15);
+}
+
+.pulse-btn.tracking .btn-icon {
+  color: var(--accent-cyan);
+}
