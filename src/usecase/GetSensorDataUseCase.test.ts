@@ -1,11 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GetSensorDataUseCase } from './GetSensorDataUseCase';
-import { ISensorService } from '../domain/ISensorService';
+import type { AppSensorState } from './GetSensorDataUseCase';
+import type { ISensorService } from '../domain/ISensorService';
+import type { IExternalDataService } from '../domain/IExternalDataService';
 
 describe('GetSensorDataUseCase (核心邏輯與退路機制測試)', () => {
   let mockService: ISensorService;
+  let mockExternalService: IExternalDataService;
   let useCase: GetSensorDataUseCase;
-  let stateChanges: any[];
+  let stateChanges: AppSensorState[];
 
   beforeEach(() => {
     stateChanges = [];
@@ -23,10 +26,15 @@ describe('GetSensorDataUseCase (核心邏輯與退路機制測試)', () => {
         onUpdate(1013.25);
         return () => {};
       }),
-      fetchPressureFromApi: vi.fn().mockResolvedValue(1012.0),
+      getPressureFromApi: vi.fn().mockResolvedValue(1012.0),
+    } as unknown as ISensorService;
+
+    mockExternalService = {
+      getLocationName: vi.fn().mockResolvedValue('台中西屯'),
+      getWeather: vi.fn().mockResolvedValue({ temperature: 25, weatherCode: 1 })
     };
 
-    useCase = new GetSensorDataUseCase(mockService, (state) => {
+    useCase = new GetSensorDataUseCase(mockService, mockExternalService, (state: AppSensorState) => {
       stateChanges.push(state);
     });
   });
