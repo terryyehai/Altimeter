@@ -63,8 +63,11 @@ export class GetSensorDataUseCase {
         
         // 若沒有硬體氣壓計數據，則透過 GPS 座標呼叫 API
         if (!this.state.pressure && position.altitude === null && position.latitude && position.longitude) {
-          this.service.fetchPressureFromApi(position.latitude, position.longitude).then((pressure: PressureData) => {
-            this.state.pressure = pressure;
+          this.service.fetchPressureFromApi(position.latitude, position.longitude).then((pressureVal: number) => {
+            this.state.pressure = {
+              pressure: pressureVal,
+              source: 'api'
+            };
             this.notify();
           }).catch(() => {
             // 忽略錯誤
@@ -133,23 +136,5 @@ export class GetSensorDataUseCase {
 
   private notify() {
     this.onStateChange({ ...this.state });
-  }
-
-  private async updatePressureFromApi(lat: number, lng: number) {
-    const now = Date.now();
-    // 限制至少每 60 秒才發送一次 API 請求，避免超過免費 API 額度
-    if (now - this.lastApiFetchTime < 60000) return; 
-    this.lastApiFetchTime = now;
-
-    try {
-      const p = await this.service.fetchPressureFromApi(lat, lng);
-      // 確保硬體氣壓計沒有成功讀取時，才覆蓋為 API 數據
-      if (this.state.pressure?.source !== 'barometer') {
-        this.state.pressure = { pressure: p, source: 'api' };
-        this.notify();
-      }
-    } catch (err) {
-      console.error('API 氣壓退路失敗', err);
-    }
   }
 }
