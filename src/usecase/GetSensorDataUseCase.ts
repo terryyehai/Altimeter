@@ -59,18 +59,6 @@ export class GetSensorDataUseCase {
         
         this.notify();
         
-        // 若沒有硬體氣壓計數據，則透過 GPS 座標呼叫 API
-        if (!this.state.pressure && position.altitude === null && position.latitude && position.longitude) {
-          this.service.fetchPressureFromApi(position.latitude, position.longitude).then((pressureVal: number) => {
-            this.state.pressure = {
-              pressure: pressureVal,
-              source: 'api'
-            };
-            this.notify();
-          }).catch(() => {
-            // 忽略錯誤
-          });
-        }
         
         // 請求地理位置與氣象 (加入 1 分鐘防抖機制避免被封鎖)
         if (position.latitude && position.longitude) {
@@ -91,6 +79,19 @@ export class GetSensorDataUseCase {
                 this.notify();
               }
             });
+            
+            // 氣壓 API 退路 (若沒有硬體氣壓計，則一併透過 API 更新)
+            if (this.state.pressure?.source !== 'barometer') {
+              this.service.fetchPressureFromApi(position.latitude, position.longitude).then((pressureVal: number) => {
+                this.state.pressure = {
+                  pressure: pressureVal,
+                  source: 'api'
+                };
+                this.notify();
+              }).catch(() => {
+                // 忽略錯誤
+              });
+            }
           }
         }
       },
