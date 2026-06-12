@@ -6,6 +6,7 @@ export type AppSensorState = {
   heading: number | null;
   pressure: PressureData | null;
   error: string | null;
+  speed: number | null; // km/h
 };
 
 export class GetSensorDataUseCase {
@@ -23,6 +24,7 @@ export class GetSensorDataUseCase {
     heading: null,
     pressure: null,
     error: null,
+    speed: null,
   };
 
   private onStateChange: (state: AppSensorState) => void;
@@ -44,6 +46,11 @@ export class GetSensorDataUseCase {
     this.watchPositionCleanup = this.service.watchPosition(
       (position) => {
         this.state.position = position;
+        
+        if (position.speed !== null && position.speed >= 0) {
+          this.state.speed = position.speed * 3.6; // convert m/s to km/h
+        }
+        
         this.notify();
         
         // 若沒有硬體氣壓計數據，則透過 GPS 座標呼叫 API

@@ -14,6 +14,7 @@ export const useSensorController = () => {
     heading: null,
     pressure: null,
     error: null,
+    speed: null,
   });
 
   useEffect(() => {
@@ -54,6 +55,12 @@ export const useSensorController = () => {
     return state.pressure.pressure.toFixed(1);
   }, [state.pressure?.pressure]);
 
+  // 格式化：移動速度
+  const formattedSpeed = useMemo(() => {
+    if (state.speed == null) return '--';
+    return Math.round(state.speed).toString();
+  }, [state.speed]);
+
   // 格式化：GPS 經緯度座標
   const formattedCoordinates = useMemo(() => {
     if (state.position?.latitude == null || state.position?.longitude == null) return '--';
@@ -75,6 +82,7 @@ export const useSensorController = () => {
     pressure: formattedPressure,
     pressureSource: state.pressure?.source === 'api' ? '外部氣象 API' : (state.pressure?.source === 'barometer' ? '硬體氣壓計' : ''),
     hasPressureData: state.pressure !== null,
+    speed: formattedSpeed,
     coordinates: formattedCoordinates,
     positionAccuracy: state.position?.accuracy ? `精度 ±${Math.round(state.position.accuracy)}m` : '',
     onToggle: handleToggleTracking

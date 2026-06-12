@@ -3,7 +3,7 @@ import { useSensorController } from './presentation/useSensorController';
 import { CompassCard } from './presentation/components/CompassCard';
 import { MetricCard } from './presentation/components/MetricCard';
 import { PulseButton } from './presentation/components/PulseButton';
-import { Mountain, Gauge, MapPin } from 'lucide-react';
+import { Mountain, Gauge, MapPin, Navigation } from 'lucide-react';
 
 const App: React.FC = () => {
   const {
@@ -14,6 +14,7 @@ const App: React.FC = () => {
     altitudeAccuracy,
     pressure,
     pressureSource,
+    speed,
     coordinates,
     positionAccuracy,
     onToggle
@@ -57,11 +58,17 @@ const App: React.FC = () => {
               subValue={pressureSource} 
             />
             <MetricCard 
+              icon={<Navigation size={16} />} 
+              label="移動速度" 
+              value={speed} 
+              unit="km/h" 
+              subValue="GPS 測速" 
+            />
+            <MetricCard 
               icon={<MapPin size={16} />} 
               label="經緯度座標" 
               value={coordinates} 
               subValue={positionAccuracy} 
-              fullWidth
             />
           </div>
         </main>

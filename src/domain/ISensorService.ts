@@ -4,6 +4,7 @@ export type PositionData = {
   accuracy: number;
   altitude: number | null;
   altitudeAccuracy: number | null;
+  speed: number | null;
 };
 
 export type PressureData = {
