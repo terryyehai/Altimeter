@@ -97,6 +97,7 @@ export const useSensorController = () => {
     heading: headingValue,
     hasHeadingData: state.heading !== null,
     altitude: formattedAltitude,
+    rawAltitude: state.position?.altitude ?? null,
     altitudeAccuracy: state.position?.altitudeAccuracy ? `精度 ±${Math.round(state.position.altitudeAccuracy)}m` : '',
     pressure: formattedPressure,
     pressureSource: state.pressure?.source === 'api' ? '外部氣象 API' : (state.pressure?.source === 'barometer' ? '硬體氣壓計' : ''),

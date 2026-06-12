@@ -8,9 +8,10 @@ interface Props {
   unit?: string;
   subValue?: string;
   fullWidth?: boolean;
+  valueColor?: string;
 }
 
-export const MetricCard: React.FC<Props> = ({ icon, label, value, unit, subValue, fullWidth }) => {
+export const MetricCard: React.FC<Props> = ({ icon, label, value, unit, subValue, fullWidth, valueColor }) => {
   return (
     <div className={`glass-card metric-card ${fullWidth ? 'full-width' : ''}`}>
       <div className="metric-label">
@@ -19,7 +20,7 @@ export const MetricCard: React.FC<Props> = ({ icon, label, value, unit, subValue
       </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className="metric-value-container">
-          <span className="metric-value font-number">{value}</span>
+          <span className="metric-value font-number" style={valueColor ? { color: valueColor } : undefined}>{value}</span>
           {unit && <span className="metric-unit">{unit}</span>}
         </div>
         {subValue && <span className="metric-sub">{subValue}</span>}

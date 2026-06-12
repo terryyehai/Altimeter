@@ -11,6 +11,7 @@ const App: React.FC = () => {
     error,
     heading,
     altitude,
+    rawAltitude,
     altitudeAccuracy,
     pressure,
     pressureSource,
@@ -22,6 +23,20 @@ const App: React.FC = () => {
     temperature,
     onToggle
   } = useSensorController();
+
+  // 高山症警告邏輯
+  let altColor: string | undefined = undefined;
+  let altSubValue = altitudeAccuracy;
+  
+  if (rawAltitude !== null) {
+    if (rawAltitude >= 3000) {
+      altColor = '#ff4444'; // 紅色 (危險)
+      altSubValue = `高反高危險區 | ${altitudeAccuracy}`;
+    } else if (rawAltitude >= 2400) {
+      altColor = '#ffaa00'; // 橘色 (警戒)
+      altSubValue = `高反警戒區 | ${altitudeAccuracy}`;
+    }
+  }
 
   // 極光背景視差效果：隨指南針微幅移動與旋轉
   const bgStyle = {
@@ -63,7 +78,8 @@ const App: React.FC = () => {
               label="海拔高度" 
               value={altitude} 
               unit="m" 
-              subValue={altitudeAccuracy} 
+              subValue={altSubValue} 
+              valueColor={altColor}
             />
             <MetricCard 
               icon={<Gauge size={16} />} 
