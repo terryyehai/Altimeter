@@ -26,7 +26,7 @@ describe('GetSensorDataUseCase (核心邏輯與退路機制測試)', () => {
         onUpdate(1013.25);
         return () => {};
       }),
-      getPressureFromApi: vi.fn().mockResolvedValue(1012.0),
+      fetchPressureFromApi: vi.fn().mockResolvedValue(1012.0),
     } as unknown as ISensorService;
 
     mockExternalService = {

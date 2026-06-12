@@ -63,7 +63,7 @@ export class GetSensorDataUseCase {
         
         // 若沒有硬體氣壓計數據，則透過 GPS 座標呼叫 API
         if (!this.state.pressure && position.altitude === null && position.latitude && position.longitude) {
-          this.service.getPressureFromApi(position.latitude, position.longitude).then(pressure => {
+          this.service.fetchPressureFromApi(position.latitude, position.longitude).then((pressure: PressureData) => {
             this.state.pressure = pressure;
             this.notify();
           }).catch(() => {
