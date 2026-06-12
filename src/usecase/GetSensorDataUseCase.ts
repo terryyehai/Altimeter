@@ -1,4 +1,4 @@
-import { ISensorService, PositionData, PressureData } from '../domain/ISensorService';
+import type { ISensorService, PositionData, PressureData } from '../domain/ISensorService';
 
 export type AppSensorState = {
   isTracking: boolean;

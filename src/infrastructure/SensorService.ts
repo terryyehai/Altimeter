@@ -1,4 +1,4 @@
-import { ISensorService, PositionData } from '../domain/ISensorService';
+import type { ISensorService, PositionData } from '../domain/ISensorService';
 
 export class SensorService implements ISensorService {
   watchPosition(onSuccess: (data: PositionData) => void, onError: (err: Error) => void): () => void {
