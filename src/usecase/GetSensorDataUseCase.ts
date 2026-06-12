@@ -1,4 +1,5 @@
 import type { ISensorService, PositionData, PressureData } from '../domain/ISensorService';
+import type { IExternalDataService, WeatherData } from '../domain/IExternalDataService';
 
 export type AppSensorState = {
   isTracking: boolean;
@@ -7,6 +8,8 @@ export type AppSensorState = {
   pressure: PressureData | null;
   error: string | null;
   speed: number | null; // km/h
+  locationName: string | null;
+  weather: WeatherData | null;
 };
 
 export class GetSensorDataUseCase {
@@ -25,12 +28,17 @@ export class GetSensorDataUseCase {
     pressure: null,
     error: null,
     speed: null,
+    locationName: null,
+    weather: null,
   };
 
   private onStateChange: (state: AppSensorState) => void;
+  private externalDataService: IExternalDataService;
+  private lastApiCallTime = 0;
 
-  constructor(service: ISensorService, onStateChange: (state: AppSensorState) => void) {
+  constructor(service: ISensorService, externalService: IExternalDataService, onStateChange: (state: AppSensorState) => void) {
     this.service = service;
+    this.externalDataService = externalService;
     this.onStateChange = onStateChange;
   }
 
@@ -54,8 +62,35 @@ export class GetSensorDataUseCase {
         this.notify();
         
         // 若沒有硬體氣壓計數據，則透過 GPS 座標呼叫 API
-        if (this.state.pressure?.source !== 'barometer') {
-          this.updatePressureFromApi(position.latitude, position.longitude);
+        if (!this.state.pressure && position.altitude === null && position.latitude && position.longitude) {
+          this.service.getPressureFromApi(position.latitude, position.longitude).then(pressure => {
+            this.state.pressure = pressure;
+            this.notify();
+          }).catch(() => {
+            // 忽略錯誤
+          });
+        }
+        
+        // 請求地理位置與氣象 (加入 1 分鐘防抖機制避免被封鎖)
+        if (position.latitude && position.longitude) {
+          const now = Date.now();
+          if (now - this.lastApiCallTime > 60000 || !this.state.locationName) {
+            this.lastApiCallTime = now;
+            
+            this.externalDataService.getLocationName(position.latitude, position.longitude).then(name => {
+              if (name) {
+                this.state.locationName = name;
+                this.notify();
+              }
+            });
+            
+            this.externalDataService.getWeather(position.latitude, position.longitude).then(weather => {
+              if (weather) {
+                this.state.weather = weather;
+                this.notify();
+              }
+            });
+          }
         }
       },
       (error) => {

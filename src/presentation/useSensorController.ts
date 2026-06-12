@@ -2,9 +2,11 @@ import { useEffect, useState, useMemo } from 'react';
 import { GetSensorDataUseCase } from '../usecase/GetSensorDataUseCase';
 import type { AppSensorState } from '../usecase/GetSensorDataUseCase';
 import { SensorService } from '../infrastructure/SensorService';
+import { ExternalDataService } from '../infrastructure/ExternalDataService';
 
 // Singleton，確保在元件重新渲染時不會重建底層服務
 const sensorService = new SensorService();
+const externalService = new ExternalDataService();
 let useCaseInstance: GetSensorDataUseCase | null = null;
 
 export const useSensorController = () => {
@@ -15,12 +17,14 @@ export const useSensorController = () => {
     pressure: null,
     error: null,
     speed: null,
+    locationName: null,
+    weather: null,
   });
 
   useEffect(() => {
     // 綁定控制器與狀態
     if (!useCaseInstance) {
-      useCaseInstance = new GetSensorDataUseCase(sensorService, (newState) => {
+      useCaseInstance = new GetSensorDataUseCase(sensorService, externalService, (newState) => {
         setState(newState);
       });
     }
@@ -69,6 +73,21 @@ export const useSensorController = () => {
     return `${lat}, ${lng}`;
   }, [state.position?.latitude, state.position?.longitude]);
   
+  // 格式化：天氣概況
+  const weatherText = useMemo(() => {
+    if (!state.weather) return '--';
+    const code = state.weather.weatherCode;
+    if (code === 0) return '晴朗';
+    if (code >= 1 && code <= 3) return '多雲';
+    if (code >= 45 && code <= 48) return '霧霾';
+    if (code >= 51 && code <= 57) return '毛毛雨';
+    if (code >= 61 && code <= 67) return '降雨';
+    if (code >= 71 && code <= 77) return '下雪';
+    if (code >= 80 && code <= 82) return '陣雨';
+    if (code >= 95 && code <= 99) return '雷雨';
+    return '未知';
+  }, [state.weather]);
+  
   // 指南針角度整數化
   const headingValue = state.heading !== null ? Math.round(state.heading) : 0;
 
@@ -85,6 +104,9 @@ export const useSensorController = () => {
     speed: formattedSpeed,
     coordinates: formattedCoordinates,
     positionAccuracy: state.position?.accuracy ? `精度 ±${Math.round(state.position.accuracy)}m` : '',
+    locationName: state.locationName || (state.isTracking ? '定位中...' : '--'),
+    weatherText: weatherText,
+    temperature: state.weather ? `${Math.round(state.weather.temperature)}°C` : '--',
     onToggle: handleToggleTracking
   };
 };

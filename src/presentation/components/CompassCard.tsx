@@ -36,42 +36,55 @@ export const CompassCard: React.FC<Props> = ({ heading, isActive }) => {
         {/* 會旋轉的羅盤盤面 */}
         <div className="compass-ticks-wrapper" style={{ transform: `rotate(${-heading}deg)`, width: '100%', height: '100%', position: 'absolute', borderRadius: '50%', overflow: 'hidden' }}>
           <svg viewBox="0 0 300 300" width="100%" height="100%">
-            {/* 中間天池 */}
-            <circle cx="150" cy="150" r="30" fill="#0a0a0c" stroke="rgba(218, 165, 32, 0.5)" strokeWidth="2" />
+            {/* 中間天池 (r=25) */}
+            <circle cx="150" cy="150" r="25" fill="#0a0a0c" stroke="rgba(218, 165, 32, 0.5)" strokeWidth="2" />
             
-            {/* 八卦內圈 (半徑 30~80) */}
-            <circle cx="150" cy="150" r="80" fill="none" stroke="rgba(218, 165, 32, 0.3)" strokeWidth="1" />
+            {/* 八卦內圈 (r=25 ~ r=65) */}
+            <circle cx="150" cy="150" r="65" fill="none" stroke="rgba(218, 165, 32, 0.3)" strokeWidth="1" />
             {TRIGRAMS.map((t, i) => {
               const angle = i * 45;
               return (
                 <g key={`t-${i}`} transform={`rotate(${angle}, 150, 150)`}>
-                  <text x="150" y="65" textAnchor="middle" fill="#e2c044" fontSize="18" fontWeight="600" fontFamily="'Noto Sans TC', sans-serif">{t}</text>
-                  <line x1="150" y1="30" x2="150" y2="80" stroke="rgba(218, 165, 32, 0.2)" strokeWidth="1" />
+                  <text x="150" y="105" textAnchor="middle" fill="#e2c044" fontSize="18" fontWeight="600" fontFamily="'Noto Sans TC', sans-serif">{t}</text>
+                  <line x1="150" y1="85" x2="150" y2="125" stroke="rgba(218, 165, 32, 0.2)" strokeWidth="1" />
                 </g>
               );
             })}
 
-            {/* 二十四山中圈 (半徑 80~120) */}
-            <circle cx="150" cy="150" r="120" fill="none" stroke="rgba(218, 165, 32, 0.3)" strokeWidth="1" />
+            {/* 二十四山中圈 (r=65 ~ r=105) */}
+            <circle cx="150" cy="150" r="105" fill="none" stroke="rgba(218, 165, 32, 0.3)" strokeWidth="1" />
             {MOUNTAINS.map((m, i) => {
               const angle = i * 15;
-              const isCardinal = i % 6 === 0; // 四正位 (子午卯酉等)
+              const isCardinal = i % 6 === 0;
               return (
                 <g key={`m-${i}`} transform={`rotate(${angle}, 150, 150)`}>
-                  <text x="150" y="105" textAnchor="middle" fill={isCardinal ? "#ff4444" : "rgba(255,255,255,0.8)"} fontSize="14" fontWeight="500" fontFamily="'Noto Sans TC', sans-serif">{m}</text>
-                  <line x1="150" y1="80" x2="150" y2="120" stroke="rgba(218, 165, 32, 0.2)" strokeWidth="1" />
+                  <text x="150" y="65" textAnchor="middle" fill={isCardinal ? "#ff6666" : "rgba(255,255,255,0.7)"} fontSize="14" fontWeight="400" fontFamily="'Noto Sans TC', sans-serif">{m}</text>
+                  <line x1="150" y1="45" x2="150" y2="85" stroke="rgba(218, 165, 32, 0.2)" strokeWidth="1" />
                 </g>
               );
             })}
             
-            {/* 刻度外圈 (半徑 120~145) */}
+            {/* 東西南北大圈 (r=105 ~ r=130) */}
+            <circle cx="150" cy="150" r="130" fill="none" stroke="rgba(218, 165, 32, 0.4)" strokeWidth="1" />
+            {['北', '東', '南', '西'].map((dir, i) => {
+              const angle = i * 90;
+              return (
+                <g key={`dir-${i}`} transform={`rotate(${angle}, 150, 150)`}>
+                  <rect x="135" y="20" width="30" height="25" fill="#111116" rx="4" />
+                  <text x="150" y="38" textAnchor="middle" fill="#ff2a2a" fontSize="18" fontWeight="900" fontFamily="'Noto Sans TC', sans-serif" style={{ filter: 'drop-shadow(0 0 4px rgba(255,42,42,0.8))' }}>{dir}</text>
+                  <line x1="150" y1="20" x2="150" y2="45" stroke="rgba(218, 165, 32, 0.3)" strokeWidth="1.5" />
+                </g>
+              );
+            })}
+
+            {/* 刻度外圈 (r=130 ~ r=145) */}
             <circle cx="150" cy="150" r="145" fill="none" stroke="rgba(218, 165, 32, 0.5)" strokeWidth="2" />
             {Array.from({ length: 72 }).map((_, i) => {
               const angle = i * 5;
-              const isMajor = i % 3 === 0; // 每 15 度為大刻度
+              const isMajor = i % 3 === 0;
               return (
                 <g key={`tick-${i}`} transform={`rotate(${angle}, 150, 150)`}>
-                  <line x1="150" y1="120" x2="150" y2={isMajor ? 130 : 125} stroke={isMajor ? "#e2c044" : "rgba(255,255,255,0.3)"} strokeWidth={isMajor ? 2 : 1} />
+                  <line x1="150" y1="5" x2="150" y2={isMajor ? 20 : 12} stroke={isMajor ? "#e2c044" : "rgba(255,255,255,0.3)"} strokeWidth={isMajor ? 2 : 1} />
                 </g>
               );
             })}

@@ -3,7 +3,7 @@ import { useSensorController } from './presentation/useSensorController';
 import { CompassCard } from './presentation/components/CompassCard';
 import { MetricCard } from './presentation/components/MetricCard';
 import { PulseButton } from './presentation/components/PulseButton';
-import { Mountain, Gauge, MapPin, Navigation } from 'lucide-react';
+import { Mountain, Gauge, MapPin, Navigation, Map, CloudSun } from 'lucide-react';
 
 const App: React.FC = () => {
   const {
@@ -17,6 +17,9 @@ const App: React.FC = () => {
     speed,
     coordinates,
     positionAccuracy,
+    locationName,
+    weatherText,
+    temperature,
     onToggle
   } = useSensorController();
 
@@ -43,6 +46,18 @@ const App: React.FC = () => {
           <CompassCard heading={heading} isActive={isTracking} />
           
           <div className="metrics-grid">
+            <MetricCard 
+              icon={<Map size={16} />} 
+              label="目前區域" 
+              value={locationName} 
+              subValue="全球通用定位" 
+            />
+            <MetricCard 
+              icon={<CloudSun size={16} />} 
+              label="當地天氣" 
+              value={temperature} 
+              subValue={weatherText} 
+            />
             <MetricCard 
               icon={<Mountain size={16} />} 
               label="海拔高度" 
